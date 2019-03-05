@@ -72,9 +72,9 @@ case "$1" in
     airflow initdb
     if [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
       # With the "Local" executor it should all run in one container.
-      airflow scheduler &
+      airflow scheduler --debug &
     fi
-    exec airflow webserver
+    exec airflow webserver --debug
     ;;
   worker|scheduler)
     # To give the webserver time to run initdb.

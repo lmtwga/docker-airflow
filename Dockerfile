@@ -47,6 +47,9 @@ RUN set -ex \
         rsync \
         netcat \
         locales \
+        procps \
+        vim \
+        net-tools \
     && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
     && locale-gen \
     && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
@@ -74,10 +77,11 @@ COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 
 RUN chown -R airflow: ${AIRFLOW_HOME}
+RUN mkdir -p ${AIRFLOW_HOME}/logs
 
-EXPOSE 8080 5555 8793
+EXPOSE 8181 5555 8793
 
-USER airflow
+#USER airflow
 WORKDIR ${AIRFLOW_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["webserver"] # set default arg for entrypoint
