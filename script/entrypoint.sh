@@ -90,6 +90,7 @@ case "$1" in
     ;;
   *)
     # The command is something like bash, not an airflow subcommand. Just run it in the right environment.
-    exec "$@"
+    # exec "$@"
+    exec sleep 9999999999999
     ;;
 esac
