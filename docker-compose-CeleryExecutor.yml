@@ -1,7 +1,7 @@
 version: '2.1'
 services:
     webserver:
-        image: puckel/docker-airflow
+        image: registry.dpool.sina.com.cn/sinadbp/docker-airflow.1.10.2
         restart: always
         environment:
             - LOAD_EX=n
@@ -20,7 +20,7 @@ services:
             retries: 3
 
     flower:
-        image: puckel/docker-airflow
+        image: registry.dpool.sina.com.cn/sinadbp/docker-airflow.1.10.2
         restart: always
         volumes:
             - /data1/dbatemp/logs/airflow/flower/logs:/root/airflow/logs
@@ -31,7 +31,7 @@ services:
         command: flower
 
     scheduler:
-        image: puckel/docker-airflow
+        image: registry.dpool.sina.com.cn/sinadbp/docker-airflow.1.10.2
         restart: always
         volumes:
             - /data1/airflow/dags:/root/airflow/dags
@@ -42,7 +42,7 @@ services:
         command: scheduler
 
     worker:
-        image: puckel/docker-airflow
+        image: registry.dpool.sina.com.cn/sinadbp/docker-airflow.1.10.2
         restart: always
         volumes:
             - /data1/airflow/dags:/root/airflow/dags
