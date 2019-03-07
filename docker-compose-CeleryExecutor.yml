@@ -8,13 +8,13 @@ services:
             - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
             - EXECUTOR=Celery
         volumes:
-            - /data1/dbatemp/logs/airflow/dags:/usr/local/airflow/dags
-            - /data1/dbatemp/logs/airflow/webserver/logs:/usr/local/airflow/logs
+            - /data1/airflow/dags:/airflow/dags
+            - /data1/dbatemp/logs/airflow/webserver/logs:/airflow/logs
         ports:
             - "8186:8080"
         command: webserver
         healthcheck:
-            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            test: ["CMD-SHELL", "[ -f /airflow/airflow-webserver.pid ]"]
             interval: 30s
             timeout: 30s
             retries: 3
@@ -23,7 +23,7 @@ services:
         image: puckel/docker-airflow
         restart: always
         volumes:
-            - /data1/dbatemp/logs/airflow/flower/logs:/usr/local/airflow/logs
+            - /data1/dbatemp/logs/airflow/flower/logs:/airflow/logs
         environment:
             - EXECUTOR=Celery
         ports:
@@ -36,8 +36,8 @@ services:
         depends_on:
             - webserver
         volumes:
-            - /data1/dbatemp/logs/airflow/dags:/usr/local/airflow/dags
-            - /data1/dbatemp/logs/airflow/scheduler/logs:/usr/local/airflow/logs
+            - /data1/airflow/dags:/airflow/dags
+            - /data1/dbatemp/logs/airflow/scheduler/logs:/airflow/logs
         environment:
             - LOAD_EX=n
             - EXECUTOR=Celery
@@ -49,8 +49,8 @@ services:
         depends_on:
             - scheduler
         volumes:
-            - /data1/dbatemp/logs/airflow/dags:/usr/local/airflow/dags
-            - /data1/dbatemp/logs/airflow/worker/logs:/usr/local/airflow/logs
+            - /data1/airflow/dags:/airflow/dags
+            - /data1/dbatemp/logs/airflow/worker/logs:/airflow/logs
         environment:
             - EXECUTOR=Celery
         command: worker

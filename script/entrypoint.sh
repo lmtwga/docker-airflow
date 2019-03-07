@@ -2,8 +2,8 @@
 
 TRY_LOOP="20"
 
-: "${REDIS_HOST:="rm22928.hebe.grid.sina.com.cn"}"
-: "${REDIS_PORT:="22928"}"
+: "${REDIS_HOST:="rm31027.randa.grid.sina.com.cn"}"
+: "${REDIS_PORT:="31027"}"
 : "${REDIS_PASSWORD:=""}"
 
 # Defaults and back-compat
@@ -36,7 +36,7 @@ else
 fi
 
 if [ "$AIRFLOW__CORE__EXECUTOR" != "SequentialExecutor" ]; then
-  AIRFLOW__CORE__SQL_ALCHEMY_CONN="mysql://airflow:airflow@m3304i.mars.grid.sina.com.cn:3304/airflow" 
+  AIRFLOW__CORE__SQL_ALCHEMY_CONN="mysql://airflow:a2iF2SowNib1aBau@m3304i.mars.grid.sina.com.cn:3304/airflow" 
   AIRFLOW__CELERY__RESULT_BACKEND="redis://$REDIS_PREFIX$REDIS_HOST:$REDIS_PORT/0"
 fi
 
@@ -49,21 +49,21 @@ case "$1" in
     airflow initdb
     if [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
       # With the "Local" executor it should all run in one container.
-      airflow scheduler --debug -l /usr/local/airflow/logs/webserver.log &
+      airflow scheduler --debug -l /airflow/logs/webserver.log &
     fi
-    exec airflow webserver --debug --log-file /usr/local/airflow/logs/webserver.log -A /usr/local/airflow/logs/webserver.access -E /usr/local/airflow/logs/webserver.err
+    exec airflow webserver --debug --log-file /airflow/logs/webserver.log -A /airflow/logs/webserver.access -E /airflow/logs/webserver.err
     ;;
   worker)
     sleep 10
-    exec airflow worker --log-file /usr/local/airflow/logs/worker.log
+    exec airflow worker --log-file /airflow/logs/worker.log
     ;;
   scheduler)
     sleep 10
-    exec airflow scheduler --log-file /usr/local/airflow/logs/scheduler.log
+    exec airflow scheduler --log-file /airflow/logs/scheduler.log
     ;;
   flower)
     sleep 10
-    exec airflow flower --log-file /usr/local/airflow/logs/flower.log
+    exec airflow flower --log-file /airflow/logs/flower.log
     ;;
   version)
     exec airflow "$@"

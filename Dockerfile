@@ -13,7 +13,7 @@ ENV TERM linux
 
 # Airflow
 ARG AIRFLOW_VERSION=1.10.2
-ARG AIRFLOW_HOME=/usr/local/airflow
+ARG AIRFLOW_HOME=/airflow
 ARG AIRFLOW_DEPS=""
 ARG PYTHON_DEPS=""
 ENV AIRFLOW_GPL_UNIDECODE yes
@@ -48,9 +48,6 @@ RUN set -ex \
         netcat \
         locales \
         procps \
-        vim \
-        net-tools \
-        sudo \
     && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
     && locale-gen \
     && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 \
@@ -79,12 +76,12 @@ COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 
 #RUN mkdir -p ${AIRFLOW_HOME}/logs ${AIRFLOW_HOME}/logs/dag_processor_manager
-VOLUME ${AIRFLOW_HOME}/logs
-RUN chown -R airflow: ${AIRFLOW_HOME} ${AIRFLOW_HOME}/logs
+VOLUME [${AIRFLOW_HOME}/logs, ${AIRFLOW_HOME}/dags]
+# RUN chown -R airflow: ${AIRFLOW_HOME} ${AIRFLOW_HOME}/logs
 
 EXPOSE 8080 5555 8793
 
-USER airflow
+#USER airflow
 WORKDIR ${AIRFLOW_HOME}
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["webserver"] # set default arg for entrypoint
