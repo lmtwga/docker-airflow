@@ -8,7 +8,8 @@ TRY_LOOP="20"
 
 # Defaults and back-compat
 : "${AIRFLOW__CORE__FERNET_KEY:=${FERNET_KEY:=$(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")}}"
-: "${AIRFLOW__CORE__EXECUTOR:=${EXECUTOR:-Sequential}Executor}"
+: "${AIRFLOW__CORE__EXECUTOR:=${EXECUTOR:-Celery}Executor}"
+#: "${AIRFLOW__CORE__EXECUTOR:=${EXECUTOR:-Sequential}Executor}"
 
 export \
   AIRFLOW__CELERY__BROKER_URL \
@@ -17,7 +18,9 @@ export \
   AIRFLOW__CORE__FERNET_KEY \
   AIRFLOW__CORE__LOAD_EXAMPLES \
   AIRFLOW__CORE__SQL_ALCHEMY_CONN \
+  C_FORCE_ROOT \
 
+C_FORCE_ROOT=True
 # Load DAGs exemples (default: Yes)
 if [[ -z "$AIRFLOW__CORE__LOAD_EXAMPLES" && "${LOAD_EX:=n}" == n ]]
 then
@@ -49,21 +52,21 @@ case "$1" in
     airflow initdb
     if [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
       # With the "Local" executor it should all run in one container.
-      airflow scheduler --debug -l /airflow/logs/webserver.log &
+      airflow scheduler --debug -l /root/airflow/logs/webserver.log &
     fi
-    exec airflow webserver --debug --log-file /airflow/logs/webserver.log -A /airflow/logs/webserver.access -E /airflow/logs/webserver.err
+    exec airflow webserver --log-file /root/airflow/logs/webserver.log -A /root/airflow/logs/webserver.access -E /root/airflow/logs/webserver.err
     ;;
   worker)
     sleep 10
-    exec airflow worker --log-file /airflow/logs/worker.log
+    exec airflow worker --log-file /root/airflow/logs/worker.log
     ;;
   scheduler)
     sleep 10
-    exec airflow scheduler --log-file /airflow/logs/scheduler.log
+    exec airflow scheduler --log-file /root/airflow/logs/scheduler.log
     ;;
   flower)
     sleep 10
-    exec airflow flower --log-file /airflow/logs/flower.log
+    exec airflow flower --log-file /root/airflow/logs/flower.log
     ;;
   version)
     exec airflow "$@"
