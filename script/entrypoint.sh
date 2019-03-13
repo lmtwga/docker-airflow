@@ -19,8 +19,10 @@ export \
   AIRFLOW__CORE__LOAD_EXAMPLES \
   AIRFLOW__CORE__SQL_ALCHEMY_CONN \
   C_FORCE_ROOT \
+  AIRFLOW_HOME \
 
 C_FORCE_ROOT=True
+AIRFLOW_HOME="/data1/airflow"
 # Load DAGs exemples (default: Yes)
 if [[ -z "$AIRFLOW__CORE__LOAD_EXAMPLES" && "${LOAD_EX:=n}" == n ]]
 then
@@ -52,21 +54,21 @@ case "$1" in
     airflow initdb
     if [ "$AIRFLOW__CORE__EXECUTOR" = "LocalExecutor" ]; then
       # With the "Local" executor it should all run in one container.
-      airflow scheduler --debug -l /root/airflow/logs/webserver.log &
+      airflow scheduler --debug -l /data1/airflow/logs/webserver.log &
     fi
-    exec airflow webserver --log-file /root/airflow/logs/webserver.log -A /root/airflow/logs/webserver.access -E /root/airflow/logs/webserver.err
+    exec airflow webserver --log-file /data1/airflow/logs/webserver.log -A /data1/airflow/logs/webserver.access -E /data1/airflow/logs/webserver.err
     ;;
   worker)
     sleep 10
-    exec airflow worker --log-file /root/airflow/logs/worker.log
+    exec airflow worker --log-file /data1/airflow/logs/worker.log
     ;;
   scheduler)
     sleep 10
-    exec airflow scheduler --log-file /root/airflow/logs/scheduler.log
+    exec airflow scheduler --log-file /data1/airflow/logs/scheduler.log
     ;;
   flower)
     sleep 10
-    exec airflow flower --log-file /root/airflow/logs/flower.log
+    exec airflow flower --log-file /data1/airflow/logs/flower.log
     ;;
   version)
     exec airflow "$@"

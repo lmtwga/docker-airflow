@@ -4,7 +4,8 @@
 # BUILD: docker build --rm -t puckel/docker-airflow .
 # SOURCE: https://github.com/puckel/docker-airflow
 
-FROM python:3.6-slim
+#FROM python:3.6-slim
+FROM python:2.7-slim
 LABEL maintainer="Puckel_"
 
 # Never prompts the user for choices on installation/configuration of packages
@@ -13,7 +14,7 @@ ENV TERM linux
 
 # Airflow
 ARG AIRFLOW_VERSION=1.10.2
-ARG AIRFLOW_HOME=/root/airflow
+ARG AIRFLOW_HOME=/data1/airflow
 ARG AIRFLOW_DEPS=""
 ARG PYTHON_DEPS=""
 ENV AIRFLOW_GPL_UNIDECODE yes
@@ -25,7 +26,6 @@ ENV LC_ALL en_US.UTF-8
 ENV LC_CTYPE en_US.UTF-8
 ENV LC_MESSAGES en_US.UTF-8
 VOLUME ${AIRFLOW_HOME}/logs
-VOLUME ${AIRFLOW_HOME}/dags
 
 RUN set -ex \
     && buildDeps=' \
@@ -58,7 +58,7 @@ RUN set -ex \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
-    && pip install apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
+    && pip install apache-airflow[crypto,celery,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
     && pip install 'redis>=3.2.0' \
     && pip install 'tornado<6.0' \
     && pip install datadog \
@@ -76,10 +76,9 @@ RUN set -ex \
         /usr/share/doc \
         /usr/share/doc-base
 
-#RUN mkdir -p ${AIRFLOW_HOME}/logs ${AIRFLOW_HOME}/logs/dag_processor_manager
 #RUN chown -R airflow: ${AIRFLOW_HOME} ${AIRFLOW_HOME}/logs
 COPY script/entrypoint.sh /entrypoint.sh
-COPY config/airflow.cfg /root/airflow.cfg
+COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 EXPOSE 8080 5555 8793
 #USER airflow
 WORKDIR ${AIRFLOW_HOME}
