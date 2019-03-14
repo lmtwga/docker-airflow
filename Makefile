@@ -13,6 +13,4 @@ start-scheduler:
 start-worker:
 	# worker 在服务器上启动、不用docker
 	# docker-compose -f docker-compose-CeleryExecutor.yml up -d worker
-	export C_FORCE_ROOT=true
-	export AIRFLOW_HOME=/data1/airflow
-	airflow worker > /data1/airflow/worker.log 2>&1 &
+	export C_FORCE_ROOT=true && export AIRFLOW_HOME=/data1/airflow && airflow worker > /data1/airflow/worker.log 2>&1 &
